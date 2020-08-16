@@ -1,9 +1,8 @@
 import React, {useState, useEffect } from "react";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
-import Fileupload from './fileupload';
+import ProgressBar from 'react-bootstrap/ProgressBar'
 import QRCode from 'qrcode.react';
-import UserActivity from './UserActivity'
 import {w3cwebsocket} from 'websocket';
 import Peer from 'peerjs'
 
@@ -23,23 +22,25 @@ const types = {
 function Main (props) { 
     const [username, setUsername] = useState()
     const [sendModal, setSendModal] = useState(false)
+    const [recModal, setRecModal] = useState(false)
     const [loggedIn, setLoggedIn] = useState(false)
     const [userActivity, setUserActivity] = useState([])
     const [peerId, setPeerId] = useState()
     const [otherId, setOtherId] = useState()
     const [file, setFile] = useState()
+    const [data, setData] = useState()
+    const [metadata, setMetadata] = useState()
+    const [url, setUrl] = useState()
+    const [progessbar, setProgressbar] = useState({now: 0, text: ''})
 
-    const handleClick = () => {
-        props.history.push("/dashboard");
-    }
  
-    // useEffect(() => {
-    //     if(!username) return
-    //         ws.send(JSON.stringify({
-    //             type: types.NEW_USER,
-    //             id: username
-    //         }))
-    // }, [username])
+    useEffect(() => {
+        if(username)
+            ws.send(JSON.stringify({
+                type: types.NEW_USER,
+                id: username
+            }))
+    }, [loggedIn])
 
     useEffect(() => {
         ws.onmessage = _msg => {
@@ -56,6 +57,7 @@ function Main (props) {
               case types.USER_ACTIVITY_LOG:
                 // setUserActivity(userActivity => [...userActivity, msg.userActivity])
                 setUserActivity(msg.userActivity)
+                console.log(msg.userActivity)
                 break;
             }
         }
@@ -63,8 +65,28 @@ function Main (props) {
 
     useEffect(() => {
         if(peerId) openPeer()
+        if(peerId === 'rec') {
+            setProgressbar({now: 10, text: 'Initializing'})
+            peer.on('connection', connection => {
+                console.log(`[+] New Peer ${connection.peer}\n Connected to Sender`)
+                setProgressbar({now: 20, text: 'p2p Connection Active'})
+                connection.on('data', dataRecieved => {
+                    console.log('[+] Data recieved', dataRecieved)
+                    setProgressbar({now: 40, text: 'Recieving'})
+                    setData(dataRecieved.file)
+                    setMetadata({name: dataRecieved.name, type: dataRecieved.type})
+                    setProgressbar({now: 99, text: 'Recieved'})
+                })
+                conn = connection;
+            })
+        }
 
     }, [peerId])
+
+    // useEffect(() => {
+    //     if(file) setProgressbar({now: 99, text: 'Recieved'})
+    // }, [file, metadata])
+    
 
     const openPeer =  () => {
         peer = new Peer(peerId
@@ -84,6 +106,10 @@ function Main (props) {
             alert('File type not recognized! Please try again.')
             return
         }
+        ws.send(JSON.stringify({
+            type: types.SENT_FILE,
+            id: username
+        }))
         // const blob = new File([file], { type: file.type })
         // const url = URL.createObjectURL(blob)
         conn = peer.connect('rec')
@@ -91,18 +117,30 @@ function Main (props) {
             console.log(`[+] Sending ${file}`)
             conn.send({file: file, type: file.type, name: file.name})
         })
+
     }
 
-
-
-
-
-
-
-
-
-
-
+    const onRecieve = () => {
+        if(!data && !metadata){
+            alert('Not ready.')
+            return;
+        }
+        console.log('[+] Saving Data', data)
+        let blob
+        if(metadata.type){
+            blob = new File([data], {type: metadata.type});
+        } 
+        else{
+            blob = new File([data]);
+        }
+        let a = document.createElement('a')
+        document.body.appendChild(a); 
+        a.href = URL.createObjectURL(blob)
+        a.setAttribute('download', metadata.name)
+        setTimeout(() => { URL.revokeObjectURL(a.href) }, 4E4) // 40s
+        a.click()
+        setUrl(URL.createObjectURL(blob)) // To Display/Preview Data
+    }
 
 
     const Login = () => (
@@ -131,7 +169,7 @@ function Main (props) {
 
 
 
-
+    const {now, text} = progessbar;
 
 if(!loggedIn) return <Login />
 else 
@@ -149,15 +187,23 @@ return (
         {file ? <button onClick={onUpload}> Share! </button> : ''}
         </div>
     }
-    <Fileupload />
     </div>
     <div className="auth-inn">
     <form>
         <h3>Receive</h3>
-    </form> 
-        <button type="submit" className="btn btn-primary btn-block" onClick={() => setPeerId('rec')}> Receive </button>
+    </form>{
+        !recModal ? 
+        <button type="submit" className="btn btn-primary btn-block" onClick={() => {setPeerId('rec'); setRecModal(true)}}> Receive </button>
+        : <div>
+        {
+            (now !== 99) ? 
+            <ProgressBar animated now={now} label={text} />
+            : 
+            <button className="btn btn-primary btn-block" onClick={onRecieve}> Download! </button>
+        }</div>
+    } 
     </div>
-    <div className="qrcode">
+    {/* <div className="qrcode">
     <form>
         <h3>Scan Qr Code</h3>
     </form> 
@@ -165,10 +211,16 @@ return (
     <br />
     <br />
     <br />
-    </div>
+    </div> */}
     <div className ='lowercont'>
     <div className='lowerin'>
-    <UserActivity userActivity={userActivity} />
+    <div>
+      {userActivity.forEach(item => (
+        <div>
+          {item}
+        </div>
+      ))}
+    </div>
     </div>
     </div>
     </div>
