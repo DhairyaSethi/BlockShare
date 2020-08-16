@@ -35,11 +35,13 @@ function Main (props) {
 
  
     useEffect(() => {
-        if(username)
+        if(username){
             ws.send(JSON.stringify({
                 type: types.NEW_USER,
                 id: username
             }))
+        props.setName(username)
+        }
     }, [loggedIn])
 
     useEffect(() => {

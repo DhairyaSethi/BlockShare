@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { BrowserRouter as Router, Link } from "react-router-dom";
 import Main from './components/Main'
 
 function App() {
+  const [name, setName] = useState()
   return (<Router>
     <div className="App">
       <nav className="navbar navbar-expand-lg navbar-light fixed-top">
@@ -15,13 +16,14 @@ function App() {
               <li className="nav-item">
               </li>
               <li className="nav-item">
+                {name? name: ''}
               </li>
             </ul>
           </div>
         </div>
       </nav>
 
-     <Main />
+     <Main setName={setName}/>
    
      
       
