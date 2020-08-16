@@ -1,36 +1,23 @@
 const port = 8000;
 const websocketServer = require('websocket').server;
 const http = require('http');
-const { send } = require('process');
 const server = http.createServer();
 server.listen(port);
 const ws = new websocketServer({ httpServer: server});
+const { PeerServer } = require('peer');
+const peerServer = PeerServer({ port: 9000, host:'localhost', path: '/' });
 
-const clients = {}
-const users = []
-const userActivity = []
-let peerIds = []
+let peers = {}
 
-const types = {
-    NEW_PEER_FOUND: 'newpeer',
-    WELCOME: 'welcome',
-    RECIEVE_FILE: 'filerecieve',
-    SENT_FILE: 'filesend',
-    USER_ACTIVITY_LOG: 'log',
+peerServer.on('connection', conn => {
+    console.log('[+]New Connection ', conn.id)
+    peers[conn.id] = conn;
 
-}
-
-updatePeers = (id, type) => {
-    Object.kets(client).map(client => {
-        if(client !== id){
-            clients[client].sendUTF(JSON.stringify({
-                type: type,
-                peerId: client,
-                userActivity: userActivity
-            }))
-        }
-    })
-}
+})
+peerServer.on('close', conn => {
+    console.log('[+] Diconnected ', conn.id)
+    delete peers[conn.id]
+})
 
 ws.on('request', req => {
     let connection = req.accept(null, req.origin)
@@ -84,12 +71,12 @@ ws.on('request', req => {
     
 })
 
-
 const fileRecieved = (data, senderPeerId) => {
     // sending file to all peers except senderpeer
     //TODO add breaking file to chunks methods here
     Object.keys(clients).map(peerId => {
-        if(peerId !== senderPeerId){
+        //@FOR NOW SEND TOO EVERYONE, FIX THIS
+//        if(peerId !== senderPeerId) { 
             clients[peerId].sendUTF(
                 JSON.stringify({
                 type: types.RECIEVE_FILE,
@@ -97,7 +84,46 @@ const fileRecieved = (data, senderPeerId) => {
                 sentby: senderPeerId
                 })
             )
-        }
+//        }
     })
 
+}
+
+const clients = {}
+const users = []
+const userActivity = []
+let peerIds = []
+
+const types = {
+    NEW_PEER_FOUND: 'newpeer',
+    WELCOME: 'welcome',
+    RECIEVE_FILE: 'filerecieve',
+    SENT_FILE: 'filesend',
+    USER_ACTIVITY_LOG: 'log',
+
+}
+
+
+
+updatePeers = (id, type) => {
+
+    if(type = types.NEW_PEER_FOUND) {
+        Object.keys(clients).map(client => {
+            let peer = client === peerIds[0] ? peerIds[1] : peerIds[0]
+            clients[client].sendUTF(JSON.stringify({
+                type: type,
+                peerId: peer
+            }))
+        })
+    }
+
+    Object.keys(clients).map(client => {
+        if(client !== id){
+            clients[client].sendUTF(JSON.stringify({
+                type: type,
+                peerId: client,
+                userActivity: userActivity
+            }))
+        }
+    })
 }
