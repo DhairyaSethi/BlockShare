@@ -2,6 +2,7 @@ import React from 'react';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Main from './components/Main'
 
 import Login from "./components/routes";
 import SignUp from "./components/signup.component";
@@ -25,7 +26,7 @@ function App() {
         </div>
       </nav>
 
-     <Login />
+     <Main />
    
      
       

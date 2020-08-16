@@ -16,7 +16,7 @@ class App extends Component {
       }
 
     handleClick = () => {
-        this.props.history.push("/dashboard");
+        this.props.history.push('/dashboard', { username: this.state.username });
     }
     
 
