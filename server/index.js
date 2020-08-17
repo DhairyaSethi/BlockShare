@@ -25,7 +25,7 @@ function NewUser(msgFomClient, connection) {
     userActivity.push(`${new Date().toLocaleTimeString('en-US')} : ${id} has just joined!`)
     clients[id] = connection;
     peerIds.push(id)
-    
+    updatePeers()
 }
 
 ws.on('request', req => {
