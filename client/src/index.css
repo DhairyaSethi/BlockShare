@@ -170,3 +170,12 @@ body, html, .App, #root, .auth-wrapper {
 .forgot-password a {
   color: #167bff;
 }
+
+.activityList {
+  list-style-type:none;
+}
+
+.activity-box {
+  max-height: 140px;
+  overflow-y: scroll;
+}

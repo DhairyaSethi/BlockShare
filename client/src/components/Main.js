@@ -8,7 +8,9 @@ import Peer from 'peerjs'
 
 let peer, conn;
 let clients = {};
+
 const ws = new w3cwebsocket('ws://127.0.0.1:8000')
+
 const types = {
     NEW_PEER_FOUND: 'newpeer',
     WELCOME: 'welcome',
@@ -34,8 +36,9 @@ function Main (props) {
     const [progessbar, setProgressbar] = useState({now: 0, text: ''})
 
  
+
     useEffect(() => {
-        if(username){
+        if(username && ws.OPEN){
             ws.send(JSON.stringify({
                 type: types.NEW_USER,
                 id: username
@@ -216,12 +219,14 @@ return (
     </div> */}
     <div className ='lowercont'>
     <div className='lowerin'>
-    <div>
-      {userActivity.forEach(item => (
-        <div>
-          {item}
-        </div>
+    <div className='activity-box'>
+    <ul className='activityList'>
+      {userActivity.map(item => (
+            <li>
+                {item}
+            </li>
       ))}
+    </ul>
     </div>
     </div>
     </div>
