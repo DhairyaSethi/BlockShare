@@ -36,7 +36,7 @@ ws.on('request', req => {
 
         if(msg.type === 'utf8') {
             const msgFomClient = JSON.parse(msg.utf8Data);
-            console.log(`Message from ${connection.id} ==> ${msgFomClient}`)
+            console.log(`Message from ${connection.id} ==> ${msg.utf8Data}`)
 
 
             switch(msgFomClient.type) {
@@ -49,6 +49,7 @@ ws.on('request', req => {
                 case types.SENT_FILE :
                     userActivity.push( `${new Date().toLocaleTimeString('en-US')} : ${peerId} just shared a document!`)
                     updatePeers()
+                    break;
             }
         }
     })
@@ -76,7 +77,6 @@ const types = {
     RECIEVE_FILE: 'filerecieve',
     SENT_FILE: 'filesend',
     USER_ACTIVITY_LOG: 'log',
-    NEW_USER: 'newUser'
 
 }
 updatePeers = () => {

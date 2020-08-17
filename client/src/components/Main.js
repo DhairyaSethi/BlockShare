@@ -2,6 +2,7 @@ import React, {useState, useEffect } from "react";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import ProgressBar from 'react-bootstrap/ProgressBar'
+import Chat from './Chat';
 import QRCode from 'qrcode.react';
 import {w3cwebsocket} from 'websocket';
 import Peer from 'peerjs'
@@ -35,6 +36,7 @@ function Main (props) {
     const [metadata, setMetadata] = useState()
     const [url, setUrl] = useState()
     const [progessbar, setProgressbar] = useState({now: 0, text: ''})
+    const [channel, setChannel] = useState('abc')
 
  
 
@@ -63,11 +65,9 @@ function Main (props) {
               case types.USER_ACTIVITY_LOG:
                 // setUserActivity(userActivity => [...userActivity, msg.userActivity])
                 setUserActivity(msg.userActivity)
-                console.log(msg.userActivity)
                 break;
-            }
         }
-    }, [])
+    }}, []);
 
     useEffect(() => {
         if(peerId) openPeer()
@@ -226,29 +226,30 @@ return (
     <form>
         <h3>Scan Qr Code</h3>
     </form> 
-    <QRCode  value="http://facebook.github.io/react/" />
+    <QRCode  value={channel} />
     <br />
     <br />
     <br />
     </div> */}
     <div className ='lowercont'>
-    <div className='lowerin'>
-    <div className='activity-box'>
-    <ul className='activityList'>
-      {userActivity.map(item => (
-            <li>
-                {item}
-            </li>
-      ))}
-    </ul>
+        <div className='lowerin'>
+            <div className='activity-box'>
+                <ul className='activityList'>
+                    {userActivity.map((item, index) => (
+                    <li key={index}>
+                        {item}
+                    </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+        <div className ='lowercont'>
+            <div className='lowerin-2'>
+                <Chat username={username} channel={channel}/>
+            </div>
+        </div>
     </div>
-    </div>
-    <div className ='lowercont'>
-    <div className='lowerin-2'>
-        <div>Chat</div>
-    </div>
-    </div>
-    </div>
+
     </div>
 );
     
