@@ -176,6 +176,9 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .activity-box {
-  max-height: 140px;
+  max-height: 130px;
   overflow-y: scroll;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
 }

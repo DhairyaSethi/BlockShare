@@ -5,6 +5,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import QRCode from 'qrcode.react';
 import {w3cwebsocket} from 'websocket';
 import Peer from 'peerjs'
+import Button from 'react-bootstrap/Button'
 
 let peer, conn;
 let clients = {};
@@ -71,16 +72,18 @@ function Main (props) {
     useEffect(() => {
         if(peerId) openPeer()
         if(peerId === 'rec') {
-            setProgressbar({now: 10, text: 'Initializing'})
+            setProgressbar({now: 20, text: 'Initializing'})
             peer.on('connection', connection => {
                 console.log(`[+] New Peer ${connection.peer}\n Connected to Sender`)
-                setProgressbar({now: 20, text: 'p2p Connection Active'})
+                setProgressbar({now: 35, text: 'p2p Connection Active'})
                 connection.on('data', dataRecieved => {
                     console.log('[+] Data recieved', dataRecieved)
-                    setProgressbar({now: 40, text: 'Recieving'})
+                    setProgressbar({now: 55, text: 'Recieving'})
                     setData(dataRecieved.file)
                     setMetadata({name: dataRecieved.name, type: dataRecieved.type})
                     setProgressbar({now: 99, text: 'Recieved'})
+                    let blob = new File([dataRecieved.data], {type: dataRecieved.type});
+                    setUrl(URL.createObjectURL(blob)) // To Display/Preview Data
                 })
                 conn = connection;
             })
@@ -122,7 +125,7 @@ function Main (props) {
             console.log(`[+] Sending ${file}`)
             conn.send({file: file, type: file.type, name: file.name})
         })
-
+        setPeerId(null)
     }
 
     const onRecieve = () => {
@@ -144,7 +147,7 @@ function Main (props) {
         a.setAttribute('download', metadata.name)
         setTimeout(() => { URL.revokeObjectURL(a.href) }, 4E4) // 40s
         a.click()
-        setUrl(URL.createObjectURL(blob)) // To Display/Preview Data
+        setPeerId(null)
     }
 
 
@@ -185,11 +188,15 @@ return (
         <h3>Send</h3>
     </form> 
     {!sendModal ? 
-        <button type="submit" className="btn btn-primary btn-block" onClick={() => {setPeerId('sen'); setSendModal(true);}}> Send </button>
+        <button 
+            disabled={peerId === 'rec' ? true : false}
+            className="btn btn-primary btn-block" 
+            onClick={() => {setPeerId('sen'); setSendModal(true);}}
+        > Send </button>
         :
         <div>
         <input type='file' onChange={e=> setFile(e.target.files[0])} />
-        {file ? <button onClick={onUpload}> Share! </button> : ''}
+        {file &&  <div><br /> <button onClick={onUpload} className="btn btn-primary btn-block"> Share! </button> </div>}
         </div>
     }
     </div>
@@ -198,13 +205,20 @@ return (
         <h3>Receive</h3>
     </form>{
         !recModal ? 
-        <button type="submit" className="btn btn-primary btn-block" onClick={() => {setPeerId('rec'); setRecModal(true)}}> Receive </button>
+        <button 
+            disabled={peerId === 'sen' ? true : false} 
+            className="btn btn-primary btn-block" 
+            onClick={() => {setPeerId('rec'); setRecModal(true)}}
+        > Receive </button>
         : <div>
         {
             (now !== 99) ? 
             <ProgressBar animated now={now} label={text} />
             : 
+            <div>
             <button className="btn btn-primary btn-block" onClick={onRecieve}> Download! </button>
+            <Button variant="link" onClick={() => window.open(url)}> Preview! </Button>
+            </div>
         }</div>
     } 
     </div>
