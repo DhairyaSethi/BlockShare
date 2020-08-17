@@ -243,6 +243,11 @@ return (
     </ul>
     </div>
     </div>
+    <div className ='lowercont'>
+    <div className='lowerin-2'>
+        <div>Chat</div>
+    </div>
+    </div>
     </div>
     </div>
 );
