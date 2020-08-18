@@ -81,7 +81,23 @@ body, html, .App, #root, .auth-wrapper {
 .lowerin {
   width: 400px;
   position: absolute;
-  left: 1050px;
+  left: 300px;
+  right: 0 ;
+  top:400px;
+  bottom: 20px;
+  height: 300px;
+  flex-direction: row;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 25px 0px 25px 0px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+.lowerin-2 {
+  width: 530px;
+  position: absolute;
+  left: 100px;
   right: 20 ;
   top:400px;
   bottom: 20px;
@@ -90,23 +106,7 @@ body, html, .App, #root, .auth-wrapper {
   margin: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 35px 55px 45px 17px;
-  border-radius: 15px;
-  transition: all .3s;
-}
-.lowerin-2 {
-  width: 600px;
-  position: absolute;
-  left: 100px;
-  right: 20 ;
-  top:400px;
-  bottom: 20px;
-  height: 250px;
-  flex-direction: row;
-  margin: auto;
-  background: #ffffff;
-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 40px 55px 45px 55px;
+  padding: 5px 5px 5px 5px;
   border-radius: 15px;
   transition: all .3s;
 }
@@ -121,12 +121,17 @@ body, html, .App, #root, .auth-wrapper {
   justify-content: center;
   
 }
-
+.center {
+  text-align: center;
+  left: auto;
+  right: auto;
+  justify-content: center;
+}
 .auth-inn {
   width: 450px;
   position: absolute;
-  left: -80px;
-  right: -40px ;
+  left: 500px;
+  right: 250px ;
   top: 120px;
   flex-direction: row;
   margin: auto;
@@ -137,18 +142,19 @@ body, html, .App, #root, .auth-wrapper {
   transition: all .3s;
 }
 .qrcode {
-  width: 450px;
+  width: 170px;
   position: absolute;
-  left: -20px;
-  right:-1500px ;
+  left: 1230px;
+  right:1px ;
   top: 120px;
   flex-direction: row;
   margin: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 40px 55px 45px 55px;
+  padding: 15px 5px 5px 5px;
   border-radius: 15px;
   transition: all .3s;
+  height: 250px
 }
 .iframe {
   position: absolute;
@@ -192,13 +198,23 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .activity-box {
-  max-height: 230px;
+  align-items: center;
+  max-height: 250px;
   overflow-y: scroll;
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
-  padding-right: 10px;
+  padding-right: 0px;
   padding-left: 0;
-  width: 350px;
+  width: 400px;
   padding-bottom: inherit;
+}
+
+.chat {
+  height: 150px;
+  max-height: 150px;
+  overflow-y: scroll;  
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
 }

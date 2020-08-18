@@ -1,7 +1,9 @@
 import React, { useEffect, useState} from 'react'
 import PubNub from 'pubnub'
 import Config from './../assets/config'
+import {Card, CardActions, CardContent,List, ListItem,Button,Typography,Input} from '@material-ui/core';
 import Log from './Log'
+import './Chat.css'
 
 let pubnub 
 
@@ -80,16 +82,37 @@ export default function Chat (props) {
 
     return (
         <div>
-            <div className="top">
-                <p>Chat</p>
-            </div>
-            <div>
-              <Log messages={messages}/>
-            </div>
-            <input type='text' value={temp} onChange={e => setTemp(e.target.value)} />
-            <button onClick={publishMessage}>
-              Submit
-            </button>
-        </div>
+            <Card elevation={0}>
+                <CardContent>
+                    <div className="top">
+                        <Typography variant="h5" inline >
+                            Chat
+                        </Typography>
+                    </div>
+                    <div>
+                        <Log messages={messages} user={username}/>
+                    </div>
+                </CardContent>
+            <CardActions>
+                <Input
+                    placeholder="Enter a message"
+                    fullWidth={true}
+                    id="messageInput"
+                    value={temp}
+                    onChange={e=>setTemp(e.target.value)}
+                    onKeyDown={e => {if(e.key === 'Enter') publishMessage();}}
+                    inputProps={{'aria-label': 'Message Field',}}
+                    autoFocus={true}
+                />
+                <Button
+                    size="small"
+                    color="primary"
+                    onClick={publishMessage}
+                    >
+                    Send
+                </Button>
+            </CardActions>
+        </Card>
+      </div>
     )
 }

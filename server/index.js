@@ -77,7 +77,7 @@ const types = {
     RECIEVE_FILE: 'filerecieve',
     SENT_FILE: 'filesend',
     USER_ACTIVITY_LOG: 'log',
-
+    NEW_USER: 'newUser'
 }
 updatePeers = () => {
     Object.keys(clients).map(client => {

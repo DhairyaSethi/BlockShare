@@ -3,7 +3,7 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import Chat from './Chat';
-import QRCode from 'qrcode.react';
+import QR from './qr'
 import {w3cwebsocket} from 'websocket';
 import Peer from 'peerjs'
 import Button from 'react-bootstrap/Button'
@@ -36,7 +36,7 @@ function Main (props) {
     const [metadata, setMetadata] = useState()
     const [url, setUrl] = useState()
     const [progessbar, setProgressbar] = useState({now: 0, text: ''})
-    const [channel, setChannel] = useState('abc')
+    const [channel, setChannel] = useState('DB7SF')
 
  
 
@@ -222,15 +222,9 @@ return (
         }</div>
     } 
     </div>
-    {/* <div className="qrcode">
-    <form>
-        <h3>Scan Qr Code</h3>
-    </form> 
-    <QRCode  value={channel} />
-    <br />
-    <br />
-    <br />
-    </div> */}
+    <div className="qrcode center">
+        <QR channel={channel} setChannel={setChannel}/>
+    </div>
     <div className ='lowercont'>
         <div className='lowerin'>
             <div className='activity-box'>
